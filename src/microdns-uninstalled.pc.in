@@ -1,0 +1,11 @@
+# the standard variables don't make sense for an uninstalled copy
+prefix=
+exec_prefix=
+libdir=@abs_top_builddir@
+includedir=@abs_top_srcdir@/src
+
+Name: microDNS
+Description: mDNS simple implementation
+Version: @VERSION@
+Libs: -L${libdir} -lmicrodns @LIBSOCKET@
+Cflags: -I${includedir}

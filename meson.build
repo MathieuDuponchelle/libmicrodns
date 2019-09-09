@@ -150,10 +150,18 @@ pkg_cdata.set('libdir', '${prefix}/@0@'.format(get_option('libdir')))
 pkg_cdata.set('includedir', '${prefix}/@0@'.format(get_option('includedir')))
 pkg_cdata.set('VERSION', mdns_version)
 pkg_cdata.set('LIBSOCKET', host_system == 'windows' ? '-lws2_32 -liphlpapi': '')
+pkg_cdata.set('abs_top_builddir', meson.current_build_dir())
+pkg_cdata.set('abs_top_srcdir', meson.current_source_dir())
 
 configure_file(
     input: 'src/microdns.pc.in',
     output: 'microdns.pc',
+    configuration: pkg_cdata
+)
+
+configure_file(
+    input: 'src/microdns-uninstalled.pc.in',
+    output: 'microdns-uninstalled.pc',
     configuration: pkg_cdata
 )
 

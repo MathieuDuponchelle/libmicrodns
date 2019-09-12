@@ -57,7 +57,7 @@ int main(int i_argc, char *ppsz_argv[])
         struct mdns_ctx *ctx;
         const char **ppsz_names;
         int i_nb_names;
-        static const char *psz_default_name = "_googlecast._tcp.local";
+        static const char *psz_default_name = "_rtsp._tcp.local";
 
         if (i_argc > 1)
         {

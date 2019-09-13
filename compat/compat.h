@@ -19,6 +19,10 @@
 #ifndef MICRODNS_COMPAT_H
 #define MICRODNS_COMPAT_H
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 enum {
         MDNS_STDERR = -1, // standard error
         MDNS_NETERR = -2, // network error
@@ -69,6 +73,8 @@ static inline int os_wouldblock(void) {return (errno == EWOULDBLOCK);}
 # ifndef AI_NUMERICSERV
 #  define AI_NUMERICSERV 0x00000008
 # endif // !AI_NUMERICSERV
+
+#define alloca(s) _alloca(s)
 
 extern uint32_t os_deadline;
 
@@ -131,6 +137,11 @@ struct pollfd
 
 #if !defined(HAVE_POLL) && !defined(_SYS_POLL_H)
 int poll(struct pollfd *fds, unsigned nfds, int timeout);
+#endif
+
+#if defined(_MSC_VER)
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
 #endif
 
 extern int os_strerror(int, char *, size_t);

@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <compat.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <signal.h>
 
 #include "microdns.h"

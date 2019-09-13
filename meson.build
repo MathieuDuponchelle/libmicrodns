@@ -94,6 +94,9 @@ poll_src = '''
 # if _WIN32_WINNT < 0x600
 #  error Needs vista+
 # endif
+# if defined(_MSC_VER)
+#   error
+# endif
 #else
 #include <poll.h>
 #endif
@@ -104,9 +107,38 @@ if cc.links(poll_src, dependencies: deps)
     cdata.set('HAVE_POLL', 1)
 endif
 
+pollfd_check_prefix = '#include <sys/types.h>\n'
+
+if cdata.get('HAVE_POLL', 0) == 1
+    pollfd_check_prefix += '#include <poll.h>\n'
+elif host_system == 'windows'
+    pollfd_check_prefix += '#include <winsock2.h>'
+endif
+
+if cc.has_type('struct pollfd', prefix: pollfd_check_prefix)
+    cdata.set('HAVE_STRUCT_POLLFD', 1)
+endif
+
+if cc.has_function('getifaddrs')
+    cdata.set('HAVE_GETIFADDRS', 1)
+endif
+
+if cc.has_header('ifaddrs.h')
+    cdata.set('HAVE_IFADDRS_H', 1)
+endif
+
 configure_file(output : 'config.h', configuration : cdata)
 
 c_args = ['-DHAVE_CONFIG_H']
+
+if host_system == 'windows'
+    c_args += [
+        '-D_UNICODE=1',
+        '-DUNICODE=1',
+        '-D_POSIX_C_SOURCE=200809L',
+        '-D_BSD_SOURCE=1'
+    ]
+endif
 
 libcompat_sources = [
     'compat/compat.c',
@@ -137,6 +169,7 @@ libmicrodns = library('microdns', libmicrodns_sources,
 examples_kwargs = {
     'include_directories': incdirs,
     'link_with': libmicrodns,
+    'c_args': c_args,
 }
 
 executable('listen', 'examples/main.c', kwargs: examples_kwargs)
